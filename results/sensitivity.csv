@@ -1,0 +1,11 @@
+parameter,value,feasible,battery_mass_kg,reason
+profile_cd,0.024,True,28.25926953103844,
+profile_cd,0.04,True,42.92056651036983,
+headwind_m_s,0,True,31.49871153245524,
+headwind_m_s,8,True,41.23405335544271,
+propulsion_efficiency,0.64,True,39.90250807023671,
+propulsion_efficiency,0.8,True,32.16828393619105,
+battery_wh_kg,160,True,42.633742706483424,
+battery_wh_kg,220,True,30.540709428480728,
+launch_energy_wh,175,True,34.37950361217745,
+launch_energy_wh,700,True,37.99432108710133,

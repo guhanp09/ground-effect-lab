@@ -1,0 +1,21 @@
+{
+  "wing": {"span_m": 8.0, "area_m2": 8.0},
+  "mission": {
+    "dry_mass_kg": 180.0,
+    "area_m2": 8.0,
+    "speed_m_s": 30.0,
+    "distance_km": 60.0,
+    "headwind_m_s": 4.0,
+    "profile_cd": 0.032,
+    "propulsion_efficiency": 0.72,
+    "battery_wh_kg": 190.0,
+    "usable_fraction": 0.8,
+    "hotel_power_w": 100.0,
+    "launch_energy_wh": 350.0,
+    "reserve_time_s": 300.0,
+    "motor_limit_w": 25000.0,
+    "gross_mass_limit_kg": 350.0,
+    "cl_limit": 1.0,
+    "rho_kg_m3": 1.225
+  }
+}
