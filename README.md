@@ -59,4 +59,6 @@ No craft, battery pack or physical test is represented by the example values.
 The useful next comparison is measured fixed-lift drag across heights, followed
 by free-surface and longitudinal-stability work.
 
+Source hashes and local tool versions accompany the checked-in [results](results/provenance.json).
+
 MIT licensed. [Technical review](docs/review.md).

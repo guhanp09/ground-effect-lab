@@ -1,0 +1,13 @@
+{
+  "data_status": "numerical or synthetic; no physical measurements",
+  "python": "3.12.7",
+  "numpy": "1.26.4",
+  "matplotlib": "3.9.2",
+  "source_sha256": {
+    "examples/coastal.json": "6a823c161cd6ca54c8a6a9980c1d4d780cdfbcf721d96c26dc0b838be0a706d3",
+    "examples/study.py": "bca0601731343a3e672e3f0c3df163a616f89e8f80897b13250a810dd38aa82d",
+    "src/ground_effect_lab/__init__.py": "13ed9b15af038c5575813219aa36170b227abff9128b591ca88d7da1eb5031ba",
+    "src/ground_effect_lab/lifting_line.py": "d0c77b3493ca3a7cb7807708eb0c70dad589a7cf6cc0fc1e1d5100362a12d781",
+    "src/ground_effect_lab/mission.py": "73ebac653d5338c64a1828847d0b8762ed56fe04ede93dbd6816f6179760d5ec"
+  }
+}

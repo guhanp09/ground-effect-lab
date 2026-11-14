@@ -65,13 +65,14 @@ def size_battery(mission, induced_k):
     cl = total * 9.80665 / (q * m.area_m2)
     required = a * total ** 2 + power_constant * duration / 3600 + m.launch_energy_wh
     reasons = []
-    for invalid, reason in [(power > m.motor_limit_w, "cruise electrical power exceeds motor limit"),
+    for invalid, reason in [(power - m.hotel_power_w > m.motor_limit_w, "cruise propulsion electrical power exceeds motor limit"),
                             (total > m.gross_mass_limit_kg, "gross mass exceeds limit"),
                             (cl > m.cl_limit, "CL exceeds assumed screening bound")]:
         if invalid:
             reasons.append(reason)
     return {"feasible": not reasons, "reasons": reasons, "battery_mass_kg": battery,
-            "gross_mass_kg": total, "electrical_power_w": power, "cl": cl,
+            "gross_mass_kg": total, "electrical_power_w": power,
+            "propulsion_electrical_power_w": power - m.hotel_power_w, "cl": cl,
             "required_energy_wh": required,
             "closure_error_wh": required - battery * m.battery_wh_kg * m.usable_fraction,
             "feedback_slope": 2 * a * total / (m.battery_wh_kg * m.usable_fraction)}

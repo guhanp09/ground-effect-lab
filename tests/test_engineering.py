@@ -64,6 +64,16 @@ def test_infeasibility_is_not_hidden():
         Mission(headwind_m_s=30)
 
 
+def test_hotel_load_is_in_energy_but_not_motor_rating():
+    mission = replace(Mission(), hotel_power_w=2000)
+    base = size_battery(mission, 0.03)
+    motor_limit = base['propulsion_electrical_power_w'] + 1
+    result = size_battery(replace(mission, motor_limit_w=motor_limit), 0.03)
+    assert result['feasible']
+    assert result['electrical_power_w'] > motor_limit
+    assert result['propulsion_electrical_power_w'] < motor_limit
+
+
 @pytest.mark.parametrize("bad", [0, -1, float("nan"), float("inf")])
 def test_bad_geometry_rejected(bad):
     with pytest.raises(ValueError):

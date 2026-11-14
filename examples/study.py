@@ -2,6 +2,8 @@
 
 from dataclasses import replace
 from pathlib import Path
+import platform
+import importlib.metadata
 import csv
 import hashlib
 import json
@@ -22,9 +24,27 @@ from ground_effect_lab.mission import Mission, size_battery
 
 def write_csv(path, rows):
     with path.open("w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        writer = csv.DictWriter(f, fieldnames=list(rows[0]), lineterminator="\n")
         writer.writeheader()
         writer.writerows(rows)
+
+
+def record_provenance():
+    paths = []
+    for directory in ('src', 'include', 'examples', 'tools', 'cad'):
+        if (ROOT / directory).exists():
+            paths.extend(p for p in (ROOT / directory).rglob('*')
+                         if p.suffix in ('.py', '.hpp', '.cpp', '.json', '.scad')
+                         and '__pycache__' not in p.parts)
+    record = {
+        'data_status': 'numerical or synthetic; no physical measurements',
+        'python': platform.python_version(),
+        'numpy': importlib.metadata.version('numpy'),
+        'matplotlib': importlib.metadata.version('matplotlib'),
+        'source_sha256': {str(p.relative_to(ROOT)): hashlib.sha256(p.read_bytes()).hexdigest()
+                          for p in sorted(paths)},
+    }
+    (ROOT / 'results/provenance.json').write_text(json.dumps(record, indent=2) + '\n')
 
 
 def main():
@@ -124,6 +144,7 @@ independent airspeed and force measurements. A calm-water slip plane cannot
 establish wave clearance, pitch/heave stability or free-surface drag.
 '''
     (out / "report.md").write_text(report)
+    record_provenance()
     print(report)
 
 

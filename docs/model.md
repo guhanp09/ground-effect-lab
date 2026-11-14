@@ -52,6 +52,8 @@ larger root lies on the high-mass branch where adding battery increases the
 required energy faster than the available energy. The report exposes the
 feedback slope. No real positive root means no closure under these assumptions.
 The stable quadratic expression avoids subtracting nearly equal numbers.
+The motor rating screen applies to propulsion electrical demand; hotel power
+counts toward pack energy and total bus demand, but not the motor rating.
 
 The constant cruise state ignores energy-dependent battery voltage and thermal
 limits. Dry mass is an input, not an optimized structure or a demonstrated mass
