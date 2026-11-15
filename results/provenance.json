@@ -5,9 +5,13 @@
   "matplotlib": "3.9.2",
   "source_sha256": {
     "examples/coastal.json": "6a823c161cd6ca54c8a6a9980c1d4d780cdfbcf721d96c26dc0b838be0a706d3",
-    "examples/study.py": "bca0601731343a3e672e3f0c3df163a616f89e8f80897b13250a810dd38aa82d",
+    "examples/study.py": "9aa0e1f6060510d0504ef346e5717b3914f43d0e8a4df0f1839fda9a63099d38",
     "src/ground_effect_lab/__init__.py": "13ed9b15af038c5575813219aa36170b227abff9128b591ca88d7da1eb5031ba",
-    "src/ground_effect_lab/lifting_line.py": "d0c77b3493ca3a7cb7807708eb0c70dad589a7cf6cc0fc1e1d5100362a12d781",
-    "src/ground_effect_lab/mission.py": "73ebac653d5338c64a1828847d0b8762ed56fe04ede93dbd6816f6179760d5ec"
+    "src/ground_effect_lab/lifting_line.py": "ca39c5d4ca86ebbcecd7e35b6bace6051adf99bbeea118205b936ed2250009d3",
+    "src/ground_effect_lab/mission.py": "5e23d9ac759966c8718bcdaa59116e9be9026344cf403f93842ee57415e6733f"
+  },
+  "mission_input": {
+    "file": "coastal.json",
+    "sha256": "6a823c161cd6ca54c8a6a9980c1d4d780cdfbcf721d96c26dc0b838be0a706d3"
   }
 }

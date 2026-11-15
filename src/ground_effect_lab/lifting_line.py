@@ -18,15 +18,19 @@ class Wing:
     section_slope_per_rad: float = 2 * math.pi
 
     def __post_init__(self):
-        if not all(math.isfinite(x) and x > 0 for x in
-                   (self.span_m, self.area_m2, self.section_slope_per_rad)):
-            raise ValueError("Wing dimensions and section slope must be positive and finite")
+        if not all(
+            math.isfinite(x) and x > 0
+            for x in (self.span_m, self.area_m2, self.section_slope_per_rad)
+        ):
+            raise ValueError(
+                "Wing dimensions and section slope must be positive and finite"
+            )
         if self.planform not in ("rectangular", "elliptical"):
             raise ValueError("Supported planforms: rectangular, elliptical")
 
     @property
     def aspect_ratio(self):
-        return self.span_m ** 2 / self.area_m2
+        return self.span_m**2 / self.area_m2
 
     def mesh(self, panels):
         if not isinstance(panels, int) or not 8 <= panels <= 1024:
@@ -36,8 +40,12 @@ class Wing:
         if self.planform == "rectangular":
             chord = np.full(panels, self.area_m2 / self.span_m)
         else:
-            chord = 4 * self.area_m2 / (np.pi * self.span_m) * np.sqrt(
-                1 - (2 * y / self.span_m) ** 2)
+            chord = (
+                4
+                * self.area_m2
+                / (np.pi * self.span_m)
+                * np.sqrt(1 - (2 * y / self.span_m) ** 2)
+            )
         return edges, y, chord
 
 
@@ -46,11 +54,9 @@ def wake_matrix(y, z, edges, height):
     dy_right = np.asarray(y)[:, None] - edges[None, 1:]
     dy_left = np.asarray(y)[:, None] - edges[None, :-1]
     dz = np.asarray(z)[:, None] - height
-    w = dy_right / (dy_right ** 2 + dz ** 2) - dy_left / (dy_left ** 2 + dz ** 2)
-    if math.isfinite(height):
-        dz_image = np.asarray(z)[:, None] + height
-        w -= (dy_right / (dy_right ** 2 + dz_image ** 2)
-              - dy_left / (dy_left ** 2 + dz_image ** 2))
+    w = dy_right / (dy_right**2 + dz**2) - dy_left / (dy_left**2 + dz**2)
+    dz_image = np.asarray(z)[:, None] + height
+    w -= dy_right / (dy_right**2 + dz_image**2) - dy_left / (dy_left**2 + dz_image**2)
     return w / (4 * np.pi)
 
 
@@ -94,9 +100,18 @@ def solve(wing, alpha_rad, height_m=None, panels=96, speed_m_s=1.0):
     w = influence @ gamma
     dy = np.diff(edges)
     cl = 2 * np.dot(gamma, dy) / (speed_m_s * wing.area_m2)
-    cdi = -2 * np.dot(gamma * w, dy) / (speed_m_s ** 2 * wing.area_m2)
-    return Solution(y, chord, dy, gamma, w, alpha_rad, float(cl), float(cdi),
-                    float(np.max(np.abs(matrix @ gamma - rhs))))
+    cdi = -2 * np.dot(gamma * w, dy) / (speed_m_s**2 * wing.area_m2)
+    return Solution(
+        y,
+        chord,
+        dy,
+        gamma,
+        w,
+        alpha_rad,
+        float(cl),
+        float(cdi),
+        float(np.max(np.abs(matrix @ gamma - rhs))),
+    )
 
 
 def fixed_lift(wing, cl, height_m=None, panels=96):

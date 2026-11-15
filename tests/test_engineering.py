@@ -11,13 +11,15 @@ def test_elliptical_wing_against_prandtl_solution():
     s = solve(wing, math.radians(4), panels=256)
     slope = 2 * math.pi / (1 + 2 / wing.aspect_ratio)
     assert s.cl / math.radians(4) == pytest.approx(slope, rel=0.005)
-    assert s.cdi == pytest.approx(s.cl ** 2 / (math.pi * wing.aspect_ratio), rel=0.012)
+    assert s.cdi == pytest.approx(s.cl**2 / (math.pi * wing.aspect_ratio), rel=0.012)
 
 
 def test_mesh_converges_to_elliptical_analytic_drag():
     wing = Wing(8, 8, "elliptical")
-    expected = 0.6 ** 2 / (math.pi * wing.aspect_ratio)
-    errors = [abs(fixed_lift(wing, 0.6, panels=n).cdi - expected) for n in (32, 64, 128, 256)]
+    expected = 0.6**2 / (math.pi * wing.aspect_ratio)
+    errors = [
+        abs(fixed_lift(wing, 0.6, panels=n).cdi - expected) for n in (32, 64, 128, 256)
+    ]
     assert all(b < a for a, b in zip(errors, errors[1:]))
 
 
@@ -47,7 +49,7 @@ def test_mass_closure_and_independent_energy_balance():
     m = Mission()
     r = size_battery(m, 0.03)
     assert r["feasible"]
-    q = 0.5 * m.rho_kg_m3 * m.speed_m_s ** 2
+    q = 0.5 * m.rho_kg_m3 * m.speed_m_s**2
     drag = q * m.area_m2 * (m.profile_cd + 0.03 * r["cl"] ** 2)
     power = drag * m.speed_m_s / m.propulsion_efficiency + m.hotel_power_w
     energy = power * (60000 / 26 + 300) / 3600 + 350
@@ -67,11 +69,11 @@ def test_infeasibility_is_not_hidden():
 def test_hotel_load_is_in_energy_but_not_motor_rating():
     mission = replace(Mission(), hotel_power_w=2000)
     base = size_battery(mission, 0.03)
-    motor_limit = base['propulsion_electrical_power_w'] + 1
+    motor_limit = base["propulsion_electrical_power_w"] + 1
     result = size_battery(replace(mission, motor_limit_w=motor_limit), 0.03)
-    assert result['feasible']
-    assert result['electrical_power_w'] > motor_limit
-    assert result['propulsion_electrical_power_w'] < motor_limit
+    assert result["feasible"]
+    assert result["electrical_power_w"] > motor_limit
+    assert result["propulsion_electrical_power_w"] < motor_limit
 
 
 @pytest.mark.parametrize("bad", [0, -1, float("nan"), float("inf")])

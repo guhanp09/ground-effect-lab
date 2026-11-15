@@ -1,23 +1,36 @@
-# Technical review
+# Calculation notes
 
-Reviewed after the initial numerical study, 15 November 2026.
+## Compare at the same lift
 
-| Finding | Resolution / retained limit |
-| --- | --- |
-| Comparing one incidence at different heights also changes lift | All drag comparisons use fixed CL |
-| A single multiplier could obscure the model | Explicit circulation influence matrix and image terms; equations and limiting tests retained |
-| Grid convergence could be mistaken for validation | Analytical elliptic-wing limit, wall residual and refinement are reported separately from missing physical measurements |
-| Battery mass was liable to be treated as a free input | Implicit energy/mass closure, stable lower root, feedback slope and infeasibility handling |
-| Motor check included hotel power | Corrected to propulsion electrical power; a high-hotel-load regression check exercises the difference |
-| Battery energy density could silently mean cell specification | Pack-level assumption and usable fraction are explicit |
-| An impressive induced-drag percentage could overstate mission benefit | Both drag and battery-mass reductions lead the README; profile-drag uncertainty is shown beside them |
-| Launch energy could imply takeoff feasibility | Report distinguishes energy allowance from unmodelled launch power and hull dynamics |
+Holding incidence fixed while lowering the wing changes both lift and drag.
+The height study therefore solves for CL=0.6 at every height. The free-air
+elliptical wing provides a separate analytical check on lift slope and induced
+drag. A vanishing wall-normal wake velocity checks the image signs; it does
+not establish that a flat slip plane represents a water surface.
 
-The core uses one numerical dependency. Inputs have finite/range checks, the
-example has an input hash, and study paths resolve independently of the current
-directory. Tests exercise analytical limits and physically meaningful failures
-rather than copying expected outputs from the implementation.
+The 192-panel result still has measurable mesh error. The 384-panel point stays
+in the output rather than treating a small linear-system residual as evidence
+that the aerodynamic discretization is accurate.
 
-Unresolved: chordwise ground effect, water-surface dynamics, stability,
-whole-craft drag and measured validation. The close-height predictions remain
-low-order model comparisons. No certification or fabricated testing is claimed.
+## Close the mass balance
+
+Adding battery increases required lift and induced drag. The lower positive
+quadratic root gives the low-mass branch; the larger root has unstable mass/energy
+feedback. A missing root is an engineering result, so the plotting and report
+code now preserve that failure instead of attempting arithmetic on an empty mass.
+
+Hotel load belongs in pack energy and total electrical demand. An earlier motor
+screen also counted it against the motor rating; the current screen uses
+propulsion electrical demand only. A high-hotel-load test covers that distinction.
+
+## Keep report text tied to inputs
+
+Reserve duration and usable fraction are read from the case file and printed
+in the input table. Command-level tests change both values and run a 10,000 km
+case that has no mass closure. This catches stale example prose and failure paths
+that the default 60 km case cannot exercise.
+
+The dominant unresolved inputs are whole-craft profile drag and pack-level
+specific energy. More panels will not reduce their uncertainty. A measured drag
+breakdown, a chord-resolved comparison and longitudinal stability work are the
+next steps before using the result to size a craft.

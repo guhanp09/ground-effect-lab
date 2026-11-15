@@ -1,19 +1,23 @@
 # Ground Effect Lab
 
-A spanwise lifting-line solver and battery-mass sizing study for an electric
-surface-skimming craft. The question is how much an induced-drag reduction
-actually helps once the rest of the drag and the battery's own mass are included.
+How much battery mass does flying near the surface actually save?
 
-![Height, battery mass, span loading and sensitivity study](results/study.png)
+This study solves the span loading of a finite wing above a slip plane, then
+closes the mission energy balance with battery mass included in aircraft weight.
+For the supplied 60 km case, h/b=0.1 gives 43.8% less induced drag at fixed lift
+and 10.2% less battery mass: 35.58 kg instead of 39.63 kg. Profile drag, reserve
+energy and propulsion losses account for the smaller mission benefit.
 
-For the assumed 60 km mission, the h/b = 0.1 calculation reduces induced drag
-by **43.8%** at fixed lift, but battery mass by **10.2%**: **35.58 kg versus
-39.63 kg** in free air. Non-induced drag and energy allowances account for much
-of the difference. [Calculation and limits](results/report.md).
+![Height sweep, mass closure, span loading and input sensitivity](results/study.png)
 
-## Run it
+The [calculation](results/report.md) lists the assumed inputs and feasibility
+screens. [convergence.csv](results/convergence.csv) shows the remaining spanwise
+mesh dependence; [sensitivity.csv](results/sensitivity.csv) shows how much the
+answer moves when drag, headwind or pack specific energy changes.
 
-Python 3.10+; the numerical core requires NumPy. The report also needs Matplotlib.
+## Reproduce or change the case
+
+Python 3.10+ and NumPy; Matplotlib is needed for the plots.
 
 ```sh
 python3 -m venv .venv
@@ -22,43 +26,25 @@ python -m pip install -r requirements-tested.txt
 python -m pip install -e .
 make test
 make study
+python examples/study.py --config examples/coastal.json --output /tmp/coastal-study
 ```
 
-The study can also run without installing the package: `python examples/study.py`.
-It resolves input and output paths from the script, so another working directory
-does not change the result. Edit [coastal.json](examples/coastal.json) to change
-the mission; the input hash is recorded in the report.
+Start with [coastal.json](examples/coastal.json). Dry mass includes payload and
+all hardware except the pack. Wh/kg is a pack value. Reserve time adds flight
+energy, while usable fraction limits stored energy. The quadratic can have no
+positive mass closure; those cases retain their failure reasons in the report.
+Motor power, gross mass and the assumed CL ceiling are checked separately.
 
-## What is calculated
+## Model boundary
 
-- Cosine-spaced span panels carry constant bound circulation and straight
-  semi-infinite trailing vortices. An opposite-sign image system imposes an
-  impermeable horizontal plane. Section lift compatibility determines circulation.
-- A fixed-CL sweep keeps lift comparable across heights. Integrating circulation
-  and downwash gives lift and induced drag; profile drag stays explicit.
-- An algebraic battery-mass closure includes cruise time, headwind, propulsion
-  efficiency, pack energy density, hotel load, reserve time and launch energy.
-  It reports infeasibility rather than selecting a convenient battery mass.
-- Separate motor, gross-mass and assumed CL screens follow the mass solve.
-  Sensitivities vary drag, headwind, efficiency, pack Wh/kg and launch energy.
+The code uses discrete lifting-line theory, constant section lift slope and a
+straight wake with mirrored circulation. It resolves span loading; chordwise
+ground effect, separation, waves, hull resistance and pitch/heave stability are
+outside the model. The launch-energy allowance needs an independent takeoff
+power calculation.
 
-The [model note](docs/model.md) gives equations, units and the lower-root choice.
-[Verification](docs/verification.md) distinguishes analytical agreement from
-physical validation. CSV outputs include the height sweep, mesh study and
-one-at-a-time sensitivity cases.
+The example is a numerical comparison using assumed craft data. The next useful
+validation is a fixed-lift drag measurement across heights.
 
-## Scope
-
-This is a low-order, inviscid, steady lifting-line calculation with an assumed
-section slope. A slip plane is not a moving water surface. It omits chordwise
-ground-effect changes, separation, hull drag, propeller interactions, waves and
-pitch/heave dynamics. Very small height/chord needs a different model. The
-launch-energy input does not establish takeoff-power feasibility.
-
-No craft, battery pack or physical test is represented by the example values.
-The useful next comparison is measured fixed-lift drag across heights, followed
-by free-surface and longitudinal-stability work.
-
-Source hashes and local tool versions accompany the checked-in [results](results/provenance.json).
-
-MIT licensed. [Technical review](docs/review.md).
+[Equations](docs/model.md) · [Verification](docs/verification.md) ·
+[Calculation notes](docs/review.md) · [Source hashes](results/provenance.json)
